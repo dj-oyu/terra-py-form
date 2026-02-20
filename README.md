@@ -9,20 +9,34 @@ AWS Infrastructure as Code tool with YAML and Python.
 ## Installation
 
 ```bash
-pip install -e .
+# Install dependencies
+uv sync
+
+# Install package in editable mode
+uv pip install -e .
+```
+
+## Testing
+
+```bash
+# Run all tests
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov
 ```
 
 ## Quick Start
 
 ```bash
 # Show dry-run plan
-terra-py-form plan examples/simple.yaml
+uv run terra-py-form plan examples/simple.yaml
 
 # Apply resources
-terra-py-form apply examples/simple.yaml
+uv run terra-py-form apply examples/simple.yaml
 
 # Show current state
-terra-py-form state show
+uv run terra-py-form state show
 ```
 
 ## YAML Example
