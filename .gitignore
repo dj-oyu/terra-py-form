@@ -1,0 +1,23 @@
+# === Secrets & Credentials (MANDATORY — NEVER remove) ===
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.secret
+credentials.json
+secrets.json
+token.json
+
+# === OS ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# === Editors ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
