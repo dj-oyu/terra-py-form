@@ -1,0 +1,119 @@
+# Terra Form - Full Feature Test YAML
+# このファイルは現在の実装の全機能を体験できます
+
+# =============================================================================
+# VPC (EC2) のテスト
+# =============================================================================
+resources:
+  # 基本的なVPC作成
+  - name: main-vpc
+    type: aws:ec2:vpc
+    properties:
+      cidr_block: "10.0.0.0/16"           # VPC CIDRブロック
+      instance_tenancy: default           # default | dedicated
+      enable_dns_hostnames: true          # DNSホスト名を有効化
+      enable_dns_support: true            # DNSサポートを有効化
+
+  # 別のCIDRを持つVPC
+  - name: secondary-vpc
+    type: aws:ec2:vpc
+    properties:
+      cidr_block: "172.16.0.0/16"
+      instance_tenancy: default
+
+# =============================================================================
+# S3 バケットのテスト
+# =============================================================================
+  # パブリックアクセス可能なバケット
+  - name: my-public-bucket
+    type: aws:s3:bucket
+    properties:
+      bucket: my-public-bucket              # バケット名
+      region: us-west-2                     # リージョン
+      acl: public-read                      # private | public-read | authenticated-read
+      versioning: true                      # バージョニング有効化
+
+  # プライベートバケット（バージョニング無効）
+  - name: my-private-bucket
+    type: aws:s3:bucket
+    properties:
+      bucket: my-private-bucket
+      region: us-east-1
+      acl: private
+      versioning: false
+
+# =============================================================================
+# RDS インスタンスのテスト
+# =============================================================================
+  # PostgreSQL データベース
+  - name: main-postgres
+    type: aws:rds:instance
+    properties:
+      instance_identifier: main-postgres-db # インスタンス識別子
+      engine: postgres                      # postgres | mysql | oracle-ee | etc.
+      engine_version: "15.3"                # エンジンのバージョン
+      instance_class: db.t3.micro            # インスタンスタイプ
+      allocated_storage: 20                  # 割当ストレージ (GB)
+      db_name: maindb                        # データベース名
+      master_username: dbadmin               # 管理者ユーザー名
+      master_password: SecurePass123!        # 管理者パスワード
+      multi_az: false                        # マルチAZ有効化
+      # vpc_security_group_ids: []           # VPCセキュリティグループID（オプション）
+
+  # MySQL データベース（マルチAZ）
+  - name: mysql-standby
+    type: aws:rds:instance
+    properties:
+      instance_identifier: mysql-standby-db
+      engine: mysql
+      engine_version: "8.0"
+      instance_class: db.t3.small
+      allocated_storage: 50
+      db_name: standbydb
+      master_username: admin
+      master_password: MySecurePass456!
+      multi_az: true
+
+# =============================================================================
+#  Outputs（出力）のテスト - 作成されたリソースのIDを出力
+# =============================================================================
+outputs:
+  vpc_id: ${resources.main-vpc.id}
+  secondary_vpc_id: ${resources.secondary-vpc.id}
+  public_bucket: ${resources.my-public-bucket.bucket}
+  private_bucket: ${resources.my-private-bucket.bucket}
+  postgres_arn: ${resources.main-postgres.id}
+  mysql_arn: ${resources.mysql-standby.id}
+
+# =============================================================================
+#  说明:
+# =============================================================================
+# このYAMLは以下の操作をテストします:
+#
+# 1. VPC作成 (EC2)
+#    - 異なるCIDRブロックでの作成
+#    - DNSホスト名/サポートの有効化
+#
+# 2. S3バケット作成
+#    - 異なるリージョンでの作成
+#    - ACL設定 (private/public-read)
+#    - バージョニングの有効化/無効化
+#
+# 3. RDSインスタンス作成
+#    - PostgreSQLとMySQL
+#    - 異なるインスタンスタイプ
+#    - マルチAZ設定
+#
+# 4. diff detection
+#    - 現在の状態とDesired Stateの比較
+#    - 変更が必要なプロパティの検出
+#
+# 5. update操作
+#    - VPCのDNS設定更新
+#    - S3のACL/バージョニング更新
+#    - RDSのインスタンスタイプ/ストレージ更新
+#
+# 6. delete操作
+#    - 全リソースの削除
+#
+# =============================================================================

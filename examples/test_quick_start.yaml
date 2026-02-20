@@ -1,0 +1,38 @@
+# Terra Form - Quick Start Test YAML
+# 最小限の構成で全機能をサクッと試せる
+
+resources:
+  # VPC 1つ
+  - name: test-vpc
+    type: aws:ec2:vpc
+    properties:
+      cidr_block: "10.0.0.0/16"
+      enable_dns_hostnames: true
+      enable_dns_support: true
+
+  # S3 バケット 1つ
+  - name: test-bucket
+    type: aws:s3:bucket
+    properties:
+      bucket: my-test-bucket-12345
+      region: us-east-1
+      acl: private
+      versioning: true
+
+  # RDS 1つ
+  - name: test-db
+    type: aws:rds:instance
+    properties:
+      instance_identifier: test-db-instance
+      engine: postgres
+      instance_class: db.t3.micro
+      allocated_storage: 20
+      db_name: testdb
+      master_username: admin
+      master_password: TestPass123!
+      multi_az: false
+
+outputs:
+  vpc_id: ${resources.test-vpc.id}
+  bucket_name: ${resources.test-bucket.bucket}
+  db_arn: ${resources.test-db.id}
