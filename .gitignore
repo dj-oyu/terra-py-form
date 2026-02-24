@@ -10,6 +10,32 @@ credentials.json
 secrets.json
 token.json
 
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# === Virtual Env ===
+.venv/
+venv/
+ENV/
+
+# === Lint & Type ===
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# === Terraform ===
+.terraform/
+*.tfstate*
+.tfvars
+
 # === OS ===
 .DS_Store
 Thumbs.db
