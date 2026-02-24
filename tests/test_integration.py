@@ -158,11 +158,15 @@ resources:
         planner = Planner(state)
         diffs = planner.plan(graph)
 
-        # Only subnet should be in diff (vpc is in state but not in graph)
-        # Note: current planner doesn't handle deletes automatically
-        # This documents the behavior
-        assert len(diffs) == 1
-        assert diffs[0].resource_name == "subnet"
+        # vpc: delete (in state but not in graph)
+        # subnet: noop (in both, same properties)
+        assert len(diffs) == 2
+
+        vpc_diff = next(d for d in diffs if d.resource_name == "vpc")
+        subnet_diff = next(d for d in diffs if d.resource_name == "subnet")
+
+        assert vpc_diff.action == "delete"
+        assert subnet_diff.action == "noop"
 
 
 class TestComplexWorkflows:
